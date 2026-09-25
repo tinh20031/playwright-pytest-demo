@@ -14,10 +14,15 @@ def test_login_page(page: Page, username, password, is_success):
     login_page.login(username, password)
 
     if is_success:
-        # Nếu đăng nhập thành công: chuyển sang trang dashboard
         expect(page).to_have_url("https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index")
+        print(f"\n[PASS - SUCCESS]: Tài khoản '{username}' đăng nhập thành công vào Dashboard.")
     else:
-        # Nếu thất bại: kiểm tra xuất hiện alert "Invalid credentials" HOẶC thông báo "Required"
+        # Bắt buộc xuất hiện thông báo lỗi
         expect(login_page.alert_invalid.or_(login_page.required_field).first).to_be_visible()
-        # Đảm bảo URL vẫn ở trang login
         expect(page).to_have_url(login_page.URL)
+
+        # In thông báo để biết web đã chặn chuẩn
+        if username == "":
+            print(f"\n[PASS - BLOCKED]: Để trống Username -> Hệ thống chặn và hiện lỗi 'Required'.")
+        else:
+            print(f"\n[PASS - BLOCKED]: Tài khoản sai '{username}' -> Hệ thống chặn và hiện lỗi 'Invalid credentials'.")
