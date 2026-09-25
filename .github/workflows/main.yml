@@ -32,7 +32,11 @@ jobs:
       # 4. Thực thi test suite
       - name: Run Pytest
         run: |
-          pytest --html=report.html --self-contained-html
+          pytest \
+            --tracing retain-on-failure \
+            --screenshot only-on-failure \
+            --output=test-results \
+            --html=report.html --self-contained-html
 
       # 5. Lưu kết quả kiểm thử (chạy kể cả khi test fail)
       - name: Upload Test Report & Traces

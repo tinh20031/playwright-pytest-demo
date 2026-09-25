@@ -1,3 +1,5 @@
+from operator import truediv
+
 import pytest
 from playwright.sync_api import Page, expect
 from pages.login_page import LoginPage
@@ -7,6 +9,7 @@ from pages.login_page import LoginPage
     ("locked_out_user", "secret_sauce", False),
     ("standard_user", "wrong_pass", False),
     ("", "secret_sauce", False),
+    ("", "secret_sauce", True),
 ])
 def test_login_page(page: Page, username, password, is_success):
     login_page = LoginPage(page)
