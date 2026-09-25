@@ -1,0 +1,43 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Cho phép bấm nút chạy thủ công trên web GitHub
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Kéo mã nguồn về máy ảo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Cài đặt Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # 3. Cài thư viện và trình duyệt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      # 4. Thực thi test suite
+      - name: Run Pytest
+        run: |
+          pytest --html=report.html --self-contained-html
+
+      # 5. Lưu kết quả kiểm thử (chạy kể cả khi test fail)
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: report.html
